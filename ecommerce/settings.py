@@ -66,6 +66,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
 ]
 
 ROOT_URLCONF = 'ecommerce.urls'
@@ -121,12 +122,23 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'pt-br'
+LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'America/Sao_Paulo'
+LANGUAGES = [
+    ('en', 'English'),
+    ('pt-br', 'Português'),
+    ('es', 'Español'),
+]
 
 USE_I18N = True
 
+LOCALE_PATHS = [
+    BASE_DIR / 'locale'
+]
+
+TIME_ZONE = 'UTC'
+
+USE_L10N = True
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
