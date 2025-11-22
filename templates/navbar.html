@@ -1,0 +1,59 @@
+{% load static %}
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'home' %}">Minha Loja</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Alternar navegação">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNavbar">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match and request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Início</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match and request.resolver_match.url_name == 'products' %}active{% endif %}" href="{% url 'products' %}">Produtos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match and request.resolver_match.url_name == 'cart' %}active{% endif %}" href="{% url 'cart' %}">Carrinho</a>
+                </li>
+            </ul>
+
+            <form class="d-flex me-3" method="get" action="{% url 'products' %}">
+                <input class="form-control me-2" type="search" placeholder="Buscar produtos..." name="q" value="{{ request.GET.q|default:'' }}">
+                <button class="btn btn-outline-secondary" type="submit">Buscar</button>
+            </form>
+
+            <ul class="navbar-nav">
+                {% if user.is_authenticated %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        {{ user.get_full_name|default:user.username }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                        <li><a class="dropdown-item" href="{% url 'profile' %}">Perfil</a></li>
+                        <li><a class="dropdown-item" href="{% url 'orders' %}">Meus pedidos</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <form method="post" action="{% url 'logout' %}" class="px-3 py-1">
+                                {% csrf_token %}
+                                <button class="btn btn-link text-danger p-0" type="submit">Sair</button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+                {% else %}
+                <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Entrar</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'signup' %}">Cadastrar</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+{# Observações rápidas:
+     - Este partial usa Bootstrap 5 (adicione CSS/JS do Bootstrap no base.html).
+     - Depende de context processors request e auth (settings.TEMPLATES context_processors).
+     - Ajuste os nomes das URLs ('home', 'products', 'cart', 'login', 'logout', 'signup', 'profile', 'orders') conforme seu projeto.
+#}
