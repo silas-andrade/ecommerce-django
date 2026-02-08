@@ -22,7 +22,7 @@ class Customer(models.Model):
         on_delete=models.CASCADE,
         related_name='customer'
     )
-    profile_image  = models.ImageField(upload_to=customer_profile_image_path)
+    profile_image  = models.ImageField(upload_to=customer_profile_image_path, null=True, blank=True)
     address = models.TextField(blank=True)
 
     def __str__(self):

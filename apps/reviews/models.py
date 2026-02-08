@@ -11,6 +11,8 @@ class Review(models.Model):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
         related_name="reviews",
+        on_delete=models.SET_NULL,
+        null=True
         )
     product = models.ForeignKey(
         Product,
@@ -49,7 +51,8 @@ class ReviewMedia(models.Model):
 class ReviewReaction(models.Model):
     review = models.ForeignKey(
         Review,
-        related_name="reactions" 
+        related_name="reactions",
+        on_delete=models.PROTECT
         )
     
     user = models.ForeignKey(

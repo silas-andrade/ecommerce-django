@@ -14,7 +14,7 @@ class Seller(models.Model):
         on_delete=models.CASCADE,
         related_name='seller'
     )
-    profile_image  = models.ImageField(upload_to=seller_profile_image_path)
+    profile_image  = models.ImageField(upload_to=seller_profile_image_path, null=True, blank=True)
     cover_image = models.ImageField(
         upload_to=seller_cover_image_path,
         null=True,
