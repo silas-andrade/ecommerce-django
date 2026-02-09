@@ -11,13 +11,14 @@ class Review(models.Model):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
         related_name="reviews",
+        on_delete=models.CASCADE
         )
     product = models.ForeignKey(
         Product,
         related_name="reviews",
         on_delete=models.CASCADE
         )
-    text = models.TextField(max_length=2000)
+    text = models.TextField()
 
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -47,9 +48,11 @@ class ReviewMedia(models.Model):
 
 
 class ReviewReaction(models.Model):
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     review = models.ForeignKey(
         Review,
-        related_name="reactions" 
+        related_name="reactions",
+        on_delete=models.CASCADE
         )
     
     user = models.ForeignKey(
@@ -59,4 +62,14 @@ class ReviewReaction(models.Model):
         )
     
     is_helpful = models.BooleanField()
+
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["review", "user"],
+                name="unique_review_reaction"
+            )
+        ]
