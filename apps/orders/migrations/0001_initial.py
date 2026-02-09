@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
                 ('total_amount', models.DecimalField(decimal_places=2, max_digits=10)),
                 ('shipping_cost', models.DecimalField(decimal_places=2, default=0, max_digits=10)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('update_at', models.DateTimeField(auto_now=True)),
+                ('updated_at', models.DateTimeField(auto_now=True)),
             ],
         ),
         migrations.CreateModel(
