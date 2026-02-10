@@ -5,6 +5,7 @@ import uuid
 from apps.products.models import Product
 from core import settings
 
+
 class Cart(models.Model):
     id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True)
     user = models.OneToOneField(
@@ -28,4 +29,3 @@ class CartItem(models.Model):
         on_delete=models.PROTECT
     )
     quantity = models.PositiveIntegerField(default=1)
-    
