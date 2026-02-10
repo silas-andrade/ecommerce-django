@@ -1,7 +1,7 @@
 from django.db import models
 
 
-from apps.users.models import User
+from core import settings
 from .storage import (
     seller_cover_image_path, 
     seller_profile_image_path
@@ -10,11 +10,15 @@ from .storage import (
 
 class Seller(models.Model):
     user = models.OneToOneField(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name='seller'
     )
-    profile_image  = models.ImageField(upload_to=seller_profile_image_path)
+    profile_image  = models.ImageField(
+        upload_to=seller_profile_image_path,
+        blank=True, 
+        null=True
+    )
     cover_image = models.ImageField(
         upload_to=seller_cover_image_path,
         null=True,
