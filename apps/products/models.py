@@ -4,7 +4,8 @@ from django.db import models
 
 
 from apps.sellers.models import Seller
-from .storage import product_image_path
+from .storage import product_media_path
+from .choices import ProductStatus
 
 
 class Product(models.Model):
@@ -18,6 +19,12 @@ class Product(models.Model):
 
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
+
+    status = models.CharField(
+        max_length=20,
+        choices=ProductStatus.choices,
+        default=ProductStatus.DRAFT
+    )
 
     price = models.DecimalField(max_digits=10, decimal_places=2)
     compare_at_price = models.DecimalField(
@@ -37,16 +44,26 @@ class Product(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 
-
-class ProductImage(models.Model):
+class ProductMedia(models.Model):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     product = models.ForeignKey(
         Product,
-        related_name="images",
+        related_name="media", 
         on_delete=models.CASCADE
         )
+    
+    file = models.FileField(
+        upload_to=product_media_path,
+        blank=True,
+        null=True
+        )
 
-    image = models.ImageField(upload_to=product_image_path)
-
+    media_type = models.CharField(
+        max_length=10,
+        choices=[
+            ("image", "Image"),
+            ("video", "Video"),
+            ]
+        )
     order = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
