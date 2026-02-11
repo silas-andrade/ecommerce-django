@@ -12,3 +12,10 @@ dependencies = [
     "pillow>=12.1.0",
     "python-dotenv>=1.2.1",
 ]
+
+[dependency-groups]
+dev = [
+    "model-bakery>=1.23.2",
+    "pytest>=9.0.2",
+    "pytest-django>=4.11.1",
+]
