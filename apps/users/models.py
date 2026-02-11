@@ -1,4 +1,4 @@
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, AbstractUser
 from django.db import models
 
 import uuid
@@ -8,11 +8,15 @@ from .storage import customer_profile_image_path
 from core import settings
 
 
-class User(AbstractUser):
+class User(AbstractBaseUser, PermissionsMixin):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    #username = models.UUIDField(default=uuid.uuid4, editable=False)
+    email = models.EmailField(unique=True)
     full_name = models.CharField(max_length=255)
     phone_number = models.CharField(max_length=10, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["username"]
 
 
 class Customer(models.Model):
