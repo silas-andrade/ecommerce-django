@@ -14,5 +14,4 @@ class ReadSellerSerializer(serializers.ModelSerializer):
             'description',
             'profile_image',
             'cover_image',
-            'address'
         ]
