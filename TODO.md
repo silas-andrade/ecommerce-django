@@ -33,10 +33,10 @@
   - [X] Moeda
   - [X] Estoque
   - [X] Seller (FK)
-- [x] Upload de imagens (MEDIA)
-- [ ] CRUD de produtos (DRF)
-- [ ] Permitir criação/edição apenas por sellers
-- [ ] Endpoint público de listagem e detalhe
+- [X] Upload de imagens (MEDIA)
+- [X] CRUD de produtos (DRF)
+- [X] Permitir criação/edição apenas por sellers
+- [X] Endpoint público de listagem e detalhe
 
 ---
 
