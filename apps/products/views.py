@@ -33,6 +33,7 @@ from .services import (
     )
 
 
+
 class ProductViewSet(ModelViewSet):
     queryset = (
         Product.objects
@@ -145,6 +146,7 @@ class ProductViewSet(ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         raise MethodNotAllowed("DELETE")
+
 
 
 class ProductMediaViewSet(ModelViewSet):

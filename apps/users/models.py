@@ -30,11 +30,3 @@ class Customer(models.Model):
 
     def __str__(self):
         return f"Customer: {self.user.username}"
-    
-"""
-if hasattr(user, 'seller'):
-    # é seller
-
-if hasattr(user, 'customer'):
-    # é customer
-"""
