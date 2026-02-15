@@ -1,6 +1,5 @@
 import pytest
 
-
 from ..models import (
     Product,
     ProductMedia
@@ -46,14 +45,18 @@ def test_archive_product():
     product1 = baker.make(Product, seller=seller, status=ProductStatus.DRAFT) 
     product2 = baker.make(Product, seller=seller, status=ProductStatus.ARCHIVED) 
     product3 = baker.make(Product, seller=seller, status=ProductStatus.PUBLISHED) 
-    with pytest.raises(DomainError) as exc:
-        archive_product(product2)
 
-    archive_product(product3)
     archive_product(product1)
     product1.refresh_from_db()
+
+    with pytest.raises(DomainError) as exc:
+        archive_product(product2)
     product2.refresh_from_db()
+
+    archive_product(product3)
     product3.refresh_from_db()
+
+
     assert product1.status == ProductStatus.ARCHIVED
     assert product2.status == ProductStatus.ARCHIVED
     assert product3.status == ProductStatus.ARCHIVED

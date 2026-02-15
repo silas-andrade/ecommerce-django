@@ -8,7 +8,7 @@ from ..models import (
     ProductMedia
 )
 from ..permissions import IsProductSellerOrReadOnly, IsSeller
-from ..services import publish_product
+from ..services import publish_product, archive_product
 from ..exceptions import DomainError
 from ..choices import ProductStatus
 
@@ -62,7 +62,6 @@ def test_create_product_with_media_api():
     Testa a criação de um produto via API.
     """
 
-
     user = baker.make(User, email="user@test.com", password="123456")
     seller = baker.make(Seller, user=user)
 
@@ -76,7 +75,53 @@ def test_create_product_with_media_api():
         "slug":'teste'
     }
 
-    response = client.post("/api/products/", payload, format="json")
+    response = client.post(
+        "/api/products/", 
+        payload, 
+        format="json"
+        )
+    product = Product.objects.get(id=response.data["id"])
+
+    client.post(
+        f"/api/products/{product.id}/media/", 
+        data={
+            "file": SimpleUploadedFile(
+                    name="test.jpg",
+                    content=b"file_content",
+                    content_type="image/jpeg"
+                    ),
+            "media_type":"image",
+            "order":1
+            },
+        format="multipart"
+        )
+
+    publish_product(product=product)
+
+    assert product.status == ProductStatus.PUBLISHED
+    assert product.description == payload["description"]
+    assert product.name == payload["name"]
+    assert str(product.price) == payload["price"]
+    assert product.seller.id == seller.id
+
+
+@pytest.mark.django_db
+def test_archive_product_api():
+    user = baker.make(User, email="user@test.com", password="123456")
+    seller = baker.make(Seller, user=user)
+
+    client = APIClient()
+    client.force_authenticate(user=user)
+
+    response = client.post(
+        "/api/products/", 
+        data={
+            "name": "Produto Teste",
+            "description": "Descrição do produto teste",
+            "price": "49.90",
+            "slug":'teste'
+        }, 
+        format="json")
 
     product = Product.objects.get(id=response.data["id"])
 
@@ -89,17 +134,17 @@ def test_create_product_with_media_api():
         "media_type":"image",
         "order":1
     }
-    response_media = client.post(
+    client.post(
         f"/api/products/{product.id}/media/", 
         data=payload_media,
         format="multipart"
-        )
+    )
 
-    publish_product(product=product)
-
+    response = client.post(f"/api/products/{product.id}/publish/")
+    product.refresh_from_db()
     assert product.status == ProductStatus.PUBLISHED
-    assert product.description == payload["description"]
-    assert product.name == payload["name"]
-    assert str(product.price) == payload["price"]
-    assert product.seller.id == seller.id
 
+
+    response = client.post(f"/api/products/{product.id}/archive/")
+    product.refresh_from_db()
+    assert product.status == ProductStatus.ARCHIVED
