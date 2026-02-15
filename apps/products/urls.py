@@ -1,10 +1,7 @@
 from rest_framework.routers import SimpleRouter
 from rest_framework_nested.routers import NestedSimpleRouter
 
-from .views import (
-    ProductViewSet, 
-    ProductMediaViewSet
-)
+from .views import ProductViewSet, ProductMediaViewSet
 
 router = SimpleRouter()
 router.register(
