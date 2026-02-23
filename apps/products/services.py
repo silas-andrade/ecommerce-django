@@ -26,6 +26,9 @@ def archive_product(product):
 
 
 def remove_product_media(product_media):
+    """
+    Remove the media from a product if the product has at least 1 media.
+    """
     product = product_media.product
 
     if product.media.count() <= 1:
