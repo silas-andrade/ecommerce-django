@@ -4,6 +4,7 @@ from .models import (
     CartItem,
     Cart
     )
+
 from apps.products.serializers import ReadProductSerializer
 
 
@@ -14,7 +15,7 @@ class CreateCartItemSerializer(serializers.ModelSerializer):
         fields = ['product', 'quantity']
 
     def validate_product(self, product):
-        if not product.status == 'draft':
+        if not product.status == 'published':
             raise serializers.ValidationError("Product unavailable.")
         return product
     
@@ -36,6 +37,12 @@ class UpdateCartItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = CartItem
         fields = ['quantity']
+
+    def validate_product(self, product):
+        if not product.status == 'published':
+            raise serializers.ValidationError("Product unavailable.")
+        return product
+
 
     def validate_quantity(self, value):
         if value < 1:
