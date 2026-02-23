@@ -48,3 +48,26 @@ def get_or_create_cart(request):
     )
 
     return cart
+
+
+def merge_session_cart_into_user_cart(session_key: str, user):
+    with transaction.atomic():
+        session_cart = Cart.objects.filter(session_key=session_key).first()
+        if not session_cart:
+            return 
+        
+        user_cart, _ = Cart.objects.get_or_create(user=user)
+
+        for item in session_cart.items.select_related("product"):
+            user_item, created = CartItem.objects.select_for_update().get_or_create(
+                cart=user_cart,
+                product = item.product,
+                defaults={
+                    "quantity":item.quantity
+                }
+            )
+            if not created:
+                user_item.quantity += item.quantity
+                user_item.save()
+
+        session_cart.delete()
