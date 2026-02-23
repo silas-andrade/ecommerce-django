@@ -1,4 +1,7 @@
-from .models import CartItem
+from .models import (
+    CartItem, 
+    Cart
+    )
 from django.db import transaction 
 from .exceptions import DomainError
 
@@ -29,3 +32,19 @@ def add_item_to_cart(product, cart, quantity):
                 cart_item.save()
 
     return cart_item
+
+
+def get_or_create_cart(request):
+    if request.user.is_authenticated:
+        cart, _ = Cart.objects.get_or_create(user=request.user)
+        return cart
+
+    if not request.session.session_key:
+        request.session.create()
+
+    cart, _ = Cart.objects.get_or_create(
+        session_key=request.session.session_key,
+        user=None
+    )
+
+    return cart
