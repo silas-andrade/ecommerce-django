@@ -33,4 +33,5 @@ urlpatterns = [
     # Apps
     path("api/users/", include("apps.users.urls")),
     path('api/', include('apps.products.urls')),
+    path('api/', include('apps.cart.urls')),
 ]
