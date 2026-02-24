@@ -1,15 +1,16 @@
 from rest_framework.routers import SimpleRouter
-from rest_framework_nested.routers import NestedSimpleRouter
 
 from django.urls import path
 
 from .views import (
     CartItemViewSet, 
-    CartView
+    CartView,
+    CartMergeSessionAPIView
 )
 
 urlpatterns = [
     path("cart/", CartView.as_view(), name="cart-detail"),
+    path("cart/merge-session", CartMergeSessionAPIView.as_view(), name="cart-merge-session"),
 ]
 
 router = SimpleRouter()

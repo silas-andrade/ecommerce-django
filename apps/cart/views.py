@@ -25,7 +25,8 @@ from .serializers import (
 from .services import (
     add_item_to_cart, 
     calculate_cart_total, 
-    get_or_create_cart
+    get_or_create_cart,
+    merge_session_cart_into_user_cart
     )
 from .permissions import IsOwnerCart
 
@@ -106,3 +107,22 @@ class CartView(APIView):
         cart = get_or_create_cart(request)
         serializer = ReadCartSerializer(cart)
         return Response(serializer.data)
+
+
+class CartMergeSessionAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        session_key = request.session.session_key
+
+        if not session_key:
+            return Response(
+                {"detail": "No active session."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        merge_session_cart_into_user_cart(
+            session_key=session_key,
+            user=request.user
+        )
+        return Response({"detail": "Cart merged successfully."})
