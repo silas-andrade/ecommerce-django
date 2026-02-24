@@ -42,7 +42,6 @@ def test_create_product_api():
 
 
     response = client.post("/api/products/", payload, format="json")
-    print(response)
     product = Product.objects.get(id=response.data["id"])
     product.refresh_from_db()
 
