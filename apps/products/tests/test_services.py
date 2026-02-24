@@ -22,20 +22,21 @@ from model_bakery import baker
 def test_publish_product_requires_media():
     user = baker.make(User)
     seller = baker.make(Seller, user=user)
-    product = baker.make(Product, seller=seller) 
+
+    product_with_no_media = baker.make(Product, seller=seller) 
     
-    product2 = baker.make(Product, seller=seller) 
-    productMedia = baker.make(ProductMedia, product=product2) 
+    product_with_media = baker.make(Product, seller=seller) 
+    baker.make(ProductMedia, product=product_with_media) 
 
     with pytest.raises(DomainError) as exc:
-        publish_product(product)
+        publish_product(product_with_media)
     
-    publish_product(product2)
+    publish_product(product_with_media)
 
-    product.refresh_from_db()
-    product2.refresh_from_db()
-    assert product.status == ProductStatus.DRAFT
-    assert product2.status == ProductStatus.PUBLISHED
+    product_with_no_media.refresh_from_db()
+    product_with_media.refresh_from_db()
+    assert product_with_no_media.status == ProductStatus.DRAFT
+    assert product_with_media.status == ProductStatus.PUBLISHED
 
 
 @pytest.mark.django_db
@@ -71,7 +72,7 @@ def test_remove_product_media():
     product_media2 = baker.make(ProductMedia, product=product)
 
     remove_product_media(product_media)
-    with pytest.raises(DomainError) as exc:
+    with pytest.raises(DomainError):
         remove_product_media(product_media2)
     
     assert product.media.count() >= 1     
