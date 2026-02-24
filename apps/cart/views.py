@@ -65,11 +65,12 @@ class CartItemViewSet(ModelViewSet):
     def get_queryset(self):
         qs = CartItem.objects.select_related("product", "cart")
 
+        if self.request.user.is_authenticated:
+            return qs.filter(cart__user=self.request.user)
+        
         if not self.request.session.session_key:
             self.request.session.create()
 
-        if self.request.user.is_authenticated:
-            return qs.filter(cart__user=self.request.user)
 
         return qs.filter(cart__session_key=self.request.session.session_key)
 
@@ -100,7 +101,7 @@ class CartItemViewSet(ModelViewSet):
 
 
 class CartView(APIView):
-
+    permission_classes = [AllowAny]
     def get(self, request):
         cart = get_or_create_cart(request)
         serializer = ReadCartSerializer(cart)
